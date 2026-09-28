@@ -10,6 +10,8 @@
 
 3つは単独で利用できます。monorepo化にDDDを要求せず、DDDは単一アプリでも使えます。
 
+スキル本体は共通の `SKILL.md` 形式です。Claude Code、Cursor、Gemini CLI、OpenCodeなど、Agent Skillsに対応するエージェントへ導入できます。
+
 ## インストール
 
 必要なスキルを指定してインストールできます。
@@ -19,6 +21,69 @@ npx skills add takashiAg/architecture-skills --skill ddd-bestpractice
 npx skills add takashiAg/architecture-skills --skill monorepo-migration
 npx skills add takashiAg/architecture-skills --skill ai-driven-development
 ```
+
+### エージェントを指定する
+
+利用するプロジェクトのディレクトリで実行します。次は3スキルをまとめて導入する例です。`'*'` はシェルで展開されないよう引用符を付けます。
+
+```sh
+# Claude Code
+npx skills add takashiAg/architecture-skills --agent claude-code --skill '*'
+
+# Cursor
+npx skills add takashiAg/architecture-skills --agent cursor --skill '*'
+
+# Gemini CLI
+npx skills add takashiAg/architecture-skills --agent gemini-cli --skill '*'
+
+# OpenCode
+npx skills add takashiAg/architecture-skills --agent opencode --skill '*'
+```
+
+一つだけなら `--skill '*'` を `--skill ddd-bestpractice` などに変えます。複数のエージェントへ導入する場合:
+
+```sh
+npx skills add takashiAg/architecture-skills --agent claude-code cursor --skill '*'
+```
+
+既定はプロジェクト単位です。個人の全プロジェクトで使いたい場合は `--global` を付けます。
+
+```sh
+npx skills add takashiAg/architecture-skills --agent claude-code --skill '*' --global
+```
+
+対象エージェントと配置は [`skills` CLIの対応一覧](https://github.com/vercel-labs/skills#supported-agents)を参照してください。対応機能やスキルの呼び出し方はエージェントとバージョンによって異なります。
+
+### Claude Codeで使う
+
+導入後、Claude Codeで以下のように呼び出せます。
+
+```text
+/ddd-bestpractice 現在のsrc構成と依存方向をレビューして
+/monorepo-migration Git履歴を保ち、npmからpnpmへの統一も含めて移行案を作って
+/ai-driven-development 決定論的に保証すべき処理をLLM任せにしていないか確認して
+```
+
+説明に合う依頼から自動選択されることもあります。詳細は[Claude Code公式のSkillsガイド](https://code.claude.com/docs/en/skills)を参照してください。他のエージェントでは、それぞれのスキル選択機能や、下記の自然言語による依頼例を使います。
+
+### 手動配置
+
+Claude Codeでは、必要な `skills/<name>/` をディレクトリごとプロジェクトの `.claude/skills/<name>/` へコピーしても利用できます。個人用は `~/.claude/skills/<name>/` です。`SKILL.md` だけでなく `references/` も一緒に配置してください。
+
+```text
+.claude/skills/ddd-bestpractice/
+├── SKILL.md
+├── references/
+└── agents/        # 任意の表示メタデータ
+```
+
+`agents/openai.yaml` はCodex向けの任意の表示情報です。共通の手順はすべて `SKILL.md` と `references/` にあり、このファイルを使わないエージェントでも読めます。専用MCPサーバーや特定ベンダーのAPIキーはスキル自体の必須条件ではありません。実際のGitHub操作やモデル評価には、その作業に必要なツール・認証を使います。
+
+### 確認済みの範囲
+
+2026-09-28に、`skills` CLIでClaude Code・Cursor・Gemini CLI・OpenCodeを指定した一時ディレクトリへの導入を確認しました。3スキルの本体と全参照ファイルが配置されることを検証済みです。各エージェントを起動した動作評価は未実施です。
+
+### ローカル確認
 
 リポジトリをローカルにcloneした場合の確認（親ディレクトリから実行）:
 
@@ -65,6 +130,6 @@ flowchart LR
 
 ## 公開・メンテナンス
 
-`skills/<name>/SKILL.md` を入口にし、詳細は各 `references/`、表示情報は `agents/openai.yaml` に置いています。各スキルに一次資料と確認日を記録しています。ツールの設定・モデル情報は採用時にも再確認します。
+`skills/<name>/SKILL.md` を入口にし、詳細は各 `references/`、Codex向けの任意の表示情報は `agents/openai.yaml` に置いています。各スキルに一次資料と確認日を記録しています。ツールの設定・モデル情報は採用時にも再確認します。
 
 現時点ではライセンスは未設定です。
