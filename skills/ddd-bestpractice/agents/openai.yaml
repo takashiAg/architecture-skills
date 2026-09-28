@@ -1,0 +1,4 @@
+interface:
+  display_name: "DDD Best Practice"
+  short_description: "最小限のDDD構成、依存方向、レビューと段階的な移行を支援"
+  default_prompt: "$ddd-bestpractice を使って、現在の構成と依存方向をレビューし、最小限の改善案を示してください。"

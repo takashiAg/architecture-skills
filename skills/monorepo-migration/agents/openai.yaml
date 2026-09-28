@@ -1,0 +1,4 @@
+interface:
+  display_name: "Monorepo Migration"
+  short_description: "既存アプリのmonorepo移行と依存関係・CI・デプロイの整理を支援"
+  default_prompt: "$monorepo-migration を使って、既存リポジトリを調査し、検証とロールバックを含む段階的な移行案を作ってください。"

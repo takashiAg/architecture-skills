@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Driven Development"
+  short_description: "AI開発の進め方、モデル選定、評価と決定論的な境界の設計を支援"
+  default_prompt: "$ai-driven-development を使って、開発フローとAIの利用箇所をレビューし、決定論的に保証すべき処理とモデル評価の改善案を示してください。"
