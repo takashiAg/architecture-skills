@@ -78,3 +78,24 @@ DB更新と外部送信は二つの関数呼び出しでは原子的にならな
 既存lintやimport graphを優先する。alias、type-only import、再export、package exports、生成コードまで見る。grepは候補抽出であり証明ではない。
 
 domain→外層、application→adapter、通常inbound→outbound、outbound→inbound、context内部の横断参照、package循環を調べる。bootstrapの例外は指定範囲の配線だけに限定する。
+
+## srcとscriptsの役割
+
+拡張子や「手動で実行するか」ではなく、責務で配置を決める。
+
+| 実行するもの | 配置の基本 | 理由 |
+| --- | --- | --- |
+| 注文取込、請求確定、業務データの再計算 | `src/inbound/cli` または `src/inbound/jobs` | 業務ユースケースを呼ぶ入口 |
+| 引数解釈、結果表示、exit codeへの変換 | 同じinbound | CLI固有の変換 |
+| DB client生成、環境設定、依存の注入 | `src/inbound/bootstrap` | 起動と配線 |
+| build、codegen、開発環境の準備 | repoまたはpackage直下の `scripts/` | 開発・運用ツール |
+| schema migrationファイル | ORM等の規定場所、またはoutbound配下 | 永続化構造の変更 |
+| schema migrationを起動するwrapper | `scripts/` または既存deploy基盤 | 運用タスクの起動 |
+
+`inbound/scripts` も責務が明確なら使えるが、新規では `cli`／`jobs` を基本として入口の種類を示す。ルートのscriptsに業務判断がある場合、入口はinbound、判断はdomain、処理順序はapplication、DBアクセスはoutboundへ分ける。ファイルをinboundへ移すだけでは責務分離にならない。
+
+通常のCLI handlerはapplicationの公開APIを受け取り、outboundをimportしない。実行エントリはbootstrapに置き、adapterとユースケースを組み立ててCLI handlerへ渡す。handlerからbootstrapをimportして配線を逆流させない。
+
+一度限りのbackfillも、業務ルールを守る必要があるならユースケースを通す。技術的なデータ変換はmigrationとして扱えるが、DB制約、再開位置、重複実行、既存業務ルールへの影響を検証する。cronやCIから動くという理由で権限・整合性チェックを迂回しない。
+
+公開する実行コマンドと内部の実装言語は別に決める。Node系なら `pnpm run <task>` を共通入口にし、必要なshはその裏側に置ける。pnpm scriptsに長い業務ロジックを書かず、applicationやdomainからルートscriptsをimportしない。

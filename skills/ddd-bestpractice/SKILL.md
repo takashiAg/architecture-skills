@@ -45,7 +45,7 @@ bootstrapの例外は配線だけ。HTTPハンドラーが直接DBを呼ぶ抜�
 
 ## 必要な参照だけ読む
 
-- 設計・配置・依存: [architecture.md](references/architecture.md)
+- 設計・配置・依存・業務CLIと開発scriptsの区別: [architecture.md](references/architecture.md)
 - 構成レビュー・アンチパターン: [review.md](references/review.md)
 - 段階的な移行・実装: [migration.md](references/migration.md) とarchitecture
 - 原典と規約の区別: [sources.md](references/sources.md)

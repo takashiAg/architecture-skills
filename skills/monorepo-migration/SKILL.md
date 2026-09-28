@@ -1,6 +1,6 @@
 ---
 name: monorepo-migration
-description: 単一アプリや複数リポジトリをmonorepoへ段階的に移行し、構成、Git履歴、Issue・PR、package manager統一、依存関係、CI、デプロイを整理する。monorepo移行の設計・実装・レビューや、それに伴うnpmからpnpmへの統一で使う。DDDの導入は前提にしない。
+description: 単一アプリや複数リポジトリをmonorepoへ段階的に移行し、構成、Git履歴、Issue・PR、package manager統一、依存関係、実行コマンド・scripts、CI、デプロイを整理する。monorepo移行の設計・実装・レビューや、それに伴うnpmからpnpmへの統一で使う。DDDの導入は前提にしない。
 ---
 
 # Monorepo Migration
@@ -34,6 +34,7 @@ description: 単一アプリや複数リポジトリをmonorepoへ段階的に�
 
 - workspace・package設計: [workspace.md](references/workspace.md)
 - 複数repo・履歴・Issue／PR: [history-and-issues.md](references/history-and-issues.md)
+- 実行基盤・scriptsの配置・shとpnpmの整理: [execution.md](references/execution.md)
 - npm→pnpm等の統一: [package-manager.md](references/package-manager.md)
 - 段階的実装・CI・配備・戻し方: [migration.md](references/migration.md)
 - 一次資料: [sources.md](references/sources.md)

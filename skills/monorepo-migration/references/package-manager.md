@@ -37,3 +37,5 @@ hoistを全体的に緩めて未宣言依存を隠すことを初手にしない
 同一入力からlockを変更せずinstallでき、各appのbuild・test・startと本番相当の成果物が動くことを確認する。manager固定、workspace設定、scripts、CI、lockは整合した単位で戻す。旧lockだけ復活させても旧環境に戻ったとは限らない。
 
 Python等の別ecosystemや独立管理が必要な領域のlockは維持し、その理由を明記する。
+
+実行コマンドも統一する場合は [execution.md](execution.md) を読む。公開入口、引数・cwd・exit code、shell実装、CIからの呼び出し、旧コマンドとの互換性を合わせて整理する。

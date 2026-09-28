@@ -5,7 +5,7 @@
 | スキル | 用途 |
 | --- | --- |
 | [ddd-bestpractice](skills/ddd-bestpractice/SKILL.md) | 最小DDD、4ディレクトリ、依存方向、構成レビュー、アンチパターン、段階的移行 |
-| [monorepo-migration](skills/monorepo-migration/SKILL.md) | workspace、Git履歴、Issue・PR、npm→pnpm、CI、デプロイ、ロールバック |
+| [monorepo-migration](skills/monorepo-migration/SKILL.md) | workspace、Git履歴、Issue・PR、npm→pnpm、実行基盤・scripts整理、CI、デプロイ、ロールバック |
 | [ai-driven-development](skills/ai-driven-development/SKILL.md) | AI開発フロー、決定論的な処理境界、Gemini 3.1等のモデル選定と評価 |
 
 3つは単独で利用できます。monorepo化にDDDを要求せず、DDDは単一アプリでも使えます。
@@ -116,6 +116,14 @@ src/
 中央の青い領域が **Core（application・domain）**、その外側が入口・外部接続を担う **inbound・outbound** です。CoreはHTTPやDBなどの具体的な技術に依存しません。
 
 矢印はimport依存です。実行時はapplicationが注入されたポートを呼び、outboundが動きます。bootstrapのみ配線のためにoutboundを参照します。この配置は本スキルの規約であり、DDD一般の唯一の正解ではありません。
+
+## srcとscripts・実行コマンド
+
+業務処理を起動するCLIやバッチは `src/inbound/cli`・`src/inbound/jobs`、配線は `src/inbound/bootstrap` に置きます。業務判断はdomain、処理順序はapplicationへ委譲します。ビルド、コード生成、開発環境の準備はrepo／package直下の `scripts/` に分けます。
+
+Node系では `pnpm run <task>` を開発者・CI・AIの共通入口にし、必要なshはその実装として呼び出します。同じタスクの別実装をshとpackage.jsonに重複させません。引数、作業ディレクトリ、環境変数、exit codeまで揃えます。
+
+詳細はDDDの[配置指針](skills/ddd-bestpractice/references/architecture.md)とmonorepo移行の[実行基盤ガイド](skills/monorepo-migration/references/execution.md)を参照してください。
 
 ## AIに任せる境界
 

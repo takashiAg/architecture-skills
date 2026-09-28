@@ -8,6 +8,8 @@
 
 | 兆候 | 確認する実害 | 最小の対処 |
 | --- | --- | --- |
+| ルートscriptsが業務データを直接更新 | HTTP側と違うルール、権限・冪等性の迂回 | inboundの入口からapplicationを呼ぶ |
+| CLI handlerがbootstrap／DB実装をimport | 起動処理と入口が循環、処理の再利用が困難 | bootstrapからhandlerへユースケースを注入 |
 | domainがORM/HTTP/SDKをimport | 型、基底class、decoratorまで技術に依存 | adapterで変換 |
 | applicationが具体storeをnew | DBなしで実行できない。配線が混在 | 利用側ポートと注入 |
 | controllerに業務ルール | CLIやジョブ経由で迂回できる | domainの操作に集約 |

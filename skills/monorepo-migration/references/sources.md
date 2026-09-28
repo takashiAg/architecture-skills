@@ -12,3 +12,7 @@
 - [Nx: Import project](https://nx.dev/docs/kb/import-project): 既存projectの取り込みと追加調整。
 
 apps/packagesの配置、段階的切替、台帳による照合はこのスキルの推奨。特定ツールの採用を必須にしない。
+
+- [pnpm: run](https://pnpm.io/cli/run): manifestのタスク実行、引数の転送。
+- [pnpm: exec](https://pnpm.io/cli/exec): ローカルCLIの実行。
+- [pnpm: Filtering](https://pnpm.io/filtering): workspaceの対象選択。
