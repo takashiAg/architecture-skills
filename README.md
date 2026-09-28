@@ -111,16 +111,9 @@ src/
     └── bootstrap/ # 配線と起動
 ```
 
-```mermaid
-flowchart LR
-    I[inbound] --> A[application]
-    A --> D[domain]
-    O[outbound] --> A
-    O --> D
-    B[inbound/bootstrap] --> I
-    B --> A
-    B --> O
-```
+![Coreと外界の境界。Core内にapplicationとdomainを置き、外側のinboundとoutboundからCoreへimport依存が向かう。bootstrapは起動時の配線を担う。](docs/images/ddd-core-outside.png)
+
+中央の青い領域が **Core（application・domain）**、その外側が入口・外部接続を担う **inbound・outbound** です。CoreはHTTPやDBなどの具体的な技術に依存しません。
 
 矢印はimport依存です。実行時はapplicationが注入されたポートを呼び、outboundが動きます。bootstrapのみ配線のためにoutboundを参照します。この配置は本スキルの規約であり、DDD一般の唯一の正解ではありません。
 
