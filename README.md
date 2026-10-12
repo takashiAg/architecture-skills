@@ -1,14 +1,15 @@
 # architecture-skills
 
-小さく始める設計と、既存の動作を保つ移行・AI開発のためのAgent Skills。日本語で記述し、必要な詳細だけを参照する構成です。
+小さく始める設計、既存の動作を保つ移行・AI開発、職能エージェントが協働するプロダクト開発のためのAgent Skills。日本語で記述し、必要な詳細だけを参照する構成です。
 
 | スキル | 用途 |
 | --- | --- |
 | [ddd-bestpractice](skills/ddd-bestpractice/SKILL.md) | 最小DDD、4ディレクトリ、依存方向、構成レビュー、アンチパターン、段階的移行 |
 | [monorepo-migration](skills/monorepo-migration/SKILL.md) | workspace、Git履歴、Issue・PR、npm→pnpm、実行基盤・scripts整理、CI、デプロイ、ロールバック |
 | [ai-driven-development](skills/ai-driven-development/SKILL.md) | AI開発フロー、決定論的な処理境界、Gemini 3.1等のモデル選定と評価 |
+| [product-team](skills/product-team/SKILL.md) | マネージャーと22職能のサブエージェント。営業・CS・Ops・UX/UI・開発・QA・文書化を協働、個別呼び出しも可能 |
 
-3つは単独で利用できます。monorepo化にDDDを要求せず、DDDは単一アプリでも使えます。
+4つは単独で利用できます。monorepo化にDDDを要求せず、DDDは単一アプリでも使えます。product-teamも他のスキルの導入を必須としません。
 
 スキル本体は共通の `SKILL.md` 形式です。Claude Code、Cursor、Gemini CLI、OpenCodeなど、Agent Skillsに対応するエージェントへ導入できます。
 
@@ -20,11 +21,12 @@
 npx skills add takashiAg/architecture-skills --skill ddd-bestpractice
 npx skills add takashiAg/architecture-skills --skill monorepo-migration
 npx skills add takashiAg/architecture-skills --skill ai-driven-development
+npx skills add takashiAg/architecture-skills --skill product-team --agent codex claude-code
 ```
 
 ### エージェントを指定する
 
-利用するプロジェクトのディレクトリで実行します。次は3スキルをまとめて導入する例です。`'*'` はシェルで展開されないよう引用符を付けます。
+利用するプロジェクトのディレクトリで実行します。次は全スキルをまとめて導入する例です。`'*'` はシェルで展開されないよう引用符を付けます。
 
 ```sh
 # Claude Code
@@ -83,6 +85,8 @@ Claude Codeでは、必要な `skills/<name>/` をディレクトリごとプロ
 
 2026-09-28に、`skills` CLIでClaude Code・Cursor・Gemini CLI・OpenCodeを指定した一時ディレクトリへの導入を確認しました。3スキルの本体と全参照ファイルが配置されることを検証済みです。各エージェントを起動した動作評価は未実施です。
 
+2026-10-12に、product-teamを`skills` CLI 1.7.2でCodex・Claude Code向けの一時ディレクトリへ導入し、全29ファイルが元と一致することを確認しました。形式・参照リンクの検証、個別依頼・QA実行不能・孫非対応の3シナリオの独立レビューを実施しています。今回のCodex環境では子から孫を起動しレビュー結果を受け取る動作も確認しました。Claude Codeでの組織全体の実行、実プロダクトでの開発・Playwright打鍵は未検証です。
+
 ### ローカル確認
 
 リポジトリをローカルにcloneした場合の確認（親ディレクトリから実行）:
@@ -99,6 +103,47 @@ npx skills add ./architecture-skills --list
 - `monorepo-migrationを使って2つのrepoを統合したい。元SHAを保ち、open Issueの移行とnpmからpnpmへの統一も計画して。`
 - `ai-driven-developmentを使ってAIの利用箇所をレビューして。金額計算や権限判定をLLM任せにしていないか確認して。`
 - `Gemini 3.1 Proを採用すべきか、現在の公式情報と実タスクの評価基準から比較案を作って。`
+
+## Product Team: マネージャーと職能エージェント
+
+ユーザーと対話するCodex／Claude Codeの下にマネージャー、その下に必要な担当を置きます。エンジニアも、ドキュメント担当もマネージャー直下です。担当の詳しい責任は[職能一覧](skills/product-team/references/catalog.md)を参照してください。
+
+```text
+ユーザー ↔ Codex / Claude Code
+             └─ マネージャー
+                 ├─ BizOps / SalesOps / CS Ops
+                 ├─ IS / FS / プレセールス / CS / マーケ
+                 ├─ PdM / UXデザイナー / UIデザイナー
+                 ├─ 設計 / フロントエンド / バックエンド / インフラ
+                 ├─ QA設計 / QA実行（打鍵）/ セキュリティ / データ分析
+                 └─ テクニカルライター / 事業責任者 / 経営者レビュー
+```
+
+必要な担当だけを起動し、担当間の質問・返答・変更をマネージャーまたはホストが取り次ぎます。QA設計はケースを作り、QA実行は利用可能なPlaywrightやブラウザツールで各ステップを確認します。ライターは実装内容と実測結果から仕様・操作手順・FAQ・リリースノートをまとめます。
+
+Codexでの例:
+
+```text
+$product-team マネージャーにオンボーディング改善を任せ、実装と検証まで進めて。
+$product-team FSだけ呼んで、この案件の提案と次のアクションを作って。
+$product-team SalesOpsとCS Opsで、受注後の引き継ぎを整えて。
+$product-team UXとUIとフロントエンドで画面を改善し、QA設計とQA実行で確認して。
+$product-team テクニカルライターだけ呼んで、実装とQA結果から操作手順をまとめて。
+```
+
+Claude Codeでは先頭を `/product-team` に置き換えます。一職能だけの呼び出しではマネージャーを挟まず、その担当を直接起動します。
+
+`product-team` 一式に役割定義を同梱し、実行時に汎用サブエージェントへ渡します。`npx skills add` だけで導入でき、別途カスタムエージェント設定を書き換える必要はありません。ネイティブの `/agents` 一覧へ23人を登録するパッケージではありません。
+
+孫を起動できない環境ではホストが担当の起動を代行します。並列数は環境に合わせ、全職種を一斉に呼びません。詳細と確認した公式資料は[実行環境への対応](skills/product-team/references/runtime.md)を参照してください。
+
+ローカルの変更を導入する場合は、利用先プロジェクトでリポジトリのパスを指定します:
+
+```sh
+npx skills add /path/to/architecture-skills --skill product-team --agent codex claude-code
+```
+
+GitHub形式のインストールコマンドは、その参照先ブランチにproduct-teamが存在する状態で利用できます。
 
 ## DDDの基本構成
 
